@@ -1,12 +1,14 @@
 import { useLayoutEffect, useState } from 'react'
 import { View, Text, StyleSheet, Pressable, ScrollView, Image, Modal, Share } from 'react-native'
-import { useRoute, useNavigation } from '@react-navigation/native'
 
+import { useRoute, useNavigation } from '@react-navigation/native'
 import { Entypo, AntDesign, Feather } from '@expo/vector-icons'
 
 import { Ingredients } from '../../components/ingredients'
 import { Instructions } from '../../components/instructions'
 import { VideoView } from '../../components/video'
+
+import { isFavorite, saveFavorite, removeItem } from '../../utils/storage'
 
 export function Detail() {
     const route = useRoute()
@@ -14,6 +16,7 @@ export function Detail() {
 
     // State
     const [showVideo, setShowVideo] = useState(false)
+    const [favorite, setFavorite] = useState(false)
 
     // Destructuring 'route'
     const { 
@@ -27,22 +30,50 @@ export function Detail() {
 
 
     useLayoutEffect( () => {
+
+        async function getStatusFavorites() {
+            const receipeFavorite = await isFavorite(route.params?.data)
+            setFavorite(receipeFavorite)
+        }
+
+        getStatusFavorites()
+
         navigation.setOptions({
             title: route.params?.data ? name : 'Detalhes da receita',
             headerRight: () => (
-                <Pressable onPress={ () => console.log('testando')}>
-                    <Entypo
-                        name='heart'
-                        size={28}
-                        color='#FF4141'
-                    />
+                <Pressable onPress={ () => handleFavoriteReceipe(route.params?.data) }>
+                    {/* START */}
+                    { favorite ? (
+                        <Entypo
+                            name='heart'
+                            size={28}
+                            color='#FF4141'
+                        />
+                    ) : (
+                        <Entypo
+                            name='heart-outlined'
+                            size={28}
+                            color='#FF4141'
+                        />
+                    )}
+                    {/* END */}
                 </Pressable>
             )
         })
-    }, [navigation, route.params?.data])
+    }, [navigation, route.params?.data, favorite])
 
     function handleOpenVideo() {
         setShowVideo(true)
+    }
+
+    async function handleFavoriteReceipe(receipe) {
+        if (favorite) {
+            await removeItem(receipe.id)
+            setFavorite(false)
+        } else {
+            await saveFavorite('@appreceitas', receipe)
+            setFavorite(true)
+        }
     }
 
     async function shareReceipe() {
