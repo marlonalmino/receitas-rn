@@ -5,6 +5,8 @@ import { View, Text, StyleSheet, SafeAreaView, TextInput, TouchableOpacity,
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 
+import { Text as MotiText } from 'moti'
+
 import { Logo } from '../../components/logo'
 import { FoodList } from '../../components/foodList'
 import api from '../../services/api'
@@ -36,8 +38,42 @@ export function Home() {
     return(
         <SafeAreaView style={styles.container}>
             <Logo/>
-            <Text style={styles.title}>Encontre a receita</Text>
-            <Text style={styles.title}>que combina com você</Text>
+            <MotiText 
+            style={styles.title}
+            from={{
+                opacity: 0,
+                translateY: 15
+            }}
+            animate={{
+                opacity: 1,
+                translateY: 0
+            }}
+            transition={{
+                delay: 100,
+                type: 'timing',
+                duration: 650
+            }}
+            >
+                Encontre a receita
+            </MotiText>
+            <MotiText 
+            style={styles.title}
+            from={{
+                opacity: 0,
+                translateY: 18
+            }}
+            animate={{
+                opacity: 1,
+                translateY: 0
+            }}
+            transition={{
+                delay: 200,
+                type: 'timing',
+                duration: 850
+            }}
+            >
+                que combina com você
+            </MotiText>
 
             <View style={styles.form}>
                 <TextInput
