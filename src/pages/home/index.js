@@ -3,14 +3,18 @@ import { View, Text, StyleSheet, SafeAreaView, TextInput, TouchableOpacity,
     FlatList
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
 
 import { Logo } from '../../components/logo'
 import { FoodList } from '../../components/foodList'
 import api from '../../services/api'
 
 export function Home() {
+    // State
     const [inputValue, setInputValue] = useState('')
     const [foods, setFoods] = useState([])
+
+    const navigation = useNavigation()
 
     useEffect(() => {
         async function fetchApi() {
@@ -22,7 +26,11 @@ export function Home() {
     }, [])
 
     function handleSearch() {
-        console.log(`Você digitou: ${inputValue}`)
+        if (!inputValue) return
+        
+        let input = inputValue
+        setInputValue('')
+        navigation.navigate('Search', { name: input})
     }
 
     return(
